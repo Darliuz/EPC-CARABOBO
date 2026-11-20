@@ -4,7 +4,7 @@
 window.EPC_CLOUD_CONFIG = {
   supabaseUrl: "https://neocddqqvpvnyrhuaraf.supabase.co",
   // Pega aquí tu Publishable key completa (la que empieza por sb_publishable_...) o tu anon key JWT:
-  supabaseAnonKey: "PEGA_AQUI_TU_PUBLISHABLE_KEY_COMPLETA",
+  supabaseAnonKey: "sb_publishable_hMBTu7arfURtgo6Q4q_h8g_6y19VIY4",
   supabaseTable: "reportes_semanales",
 
   firebaseConfig: null
