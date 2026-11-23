@@ -716,32 +716,38 @@ const STORAGE_KEYS = {
       container.innerHTML = '';
 
       comisionesState.forEach((item, idx) => {
-        const isChecked = item.asistio === 'X';
+        const numAsist = parseComisionAsistenciaNum(item.asistio);
+        const hasAttendees = numAsist > 0;
         const row = document.createElement('div');
-        row.className = `p-4 md:px-5 md:py-3.5 grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-4 items-center transition ${isChecked ? 'bg-emerald-50/40' : 'bg-white hover:bg-slate-50/70'}`;
+        row.className = `p-4 md:px-5 md:py-3.5 grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-4 items-center transition ${hasAttendees ? 'bg-emerald-50/40' : 'bg-white hover:bg-slate-50/70'}`;
 
         row.innerHTML = `
           <div class="md:col-span-5 flex items-center gap-3">
-            <span class="w-6 h-6 rounded-lg text-xs font-bold flex items-center justify-center shrink-0 ${isChecked ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-600'}">
+            <span class="w-6 h-6 rounded-lg text-xs font-bold flex items-center justify-center shrink-0 ${hasAttendees ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-600'}">
               ${idx + 1}
             </span>
             <span class="text-xs sm:text-sm font-bold text-slate-800 leading-snug">${escapeHtml(item.nombre)}</span>
           </div>
 
           <div class="md:col-span-2 flex items-center md:justify-center">
-            <button type="button" onclick="toggleComisionAsistencia(${idx})"
-              class="w-full md:w-36 py-2 px-3 rounded-xl border-2 font-bold text-xs transition flex items-center justify-center gap-2 ${
-                isChecked
-                  ? 'border-emerald-600 bg-emerald-600 text-white shadow-sm'
-                  : 'border-slate-300 bg-white text-slate-600 hover:border-slate-400'
-              }">
-              <span class="w-5 h-5 rounded-md flex items-center justify-center font-mono text-xs ${
-                isChecked ? 'bg-white text-emerald-700 font-extrabold' : 'bg-slate-100 text-slate-400 border border-slate-300'
-              }">
-                ${isChecked ? 'X' : '&nbsp;'}
+            <div class="relative w-full md:w-32">
+              <input type="number"
+                min="0"
+                step="1"
+                inputmode="numeric"
+                value="${numAsist > 0 ? numAsist : ''}"
+                oninput="updateComisionAsistencia(${idx}, this.value)"
+                placeholder="0"
+                aria-label="Cantidad de asistentes en ${escapeHtml(item.nombre)}"
+                class="w-full px-3 py-2 pr-12 rounded-xl border-2 text-center font-bold text-sm transition focus:outline-none focus:ring-2 focus:ring-brand-500 ${
+                  hasAttendees
+                    ? 'border-emerald-600 bg-emerald-50 text-emerald-900'
+                    : 'border-slate-300 bg-white text-slate-900'
+                }" />
+              <span class="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] font-bold uppercase text-slate-400 pointer-events-none">
+                pers.
               </span>
-              <span>${isChecked ? 'Asistió (X)' : 'En blanco'}</span>
-            </button>
+            </div>
           </div>
 
           <div class="md:col-span-5">
@@ -755,13 +761,49 @@ const STORAGE_KEYS = {
         container.appendChild(row);
       });
 
-      const countX = countComisionesAsistentes(comisionesState);
-      document.getElementById('comisiones-count-badge').textContent = `${countX} de ${comisionesState.length} con "X"`;
+      const totalAsist = countComisionesAsistentes(comisionesState);
+      document.getElementById('comisiones-count-badge').textContent = `${totalAsist} ${totalAsist === 1 ? 'persona' : 'personas'}`;
     }
 
-    window.toggleComisionAsistencia = function (idx) {
-      comisionesState[idx].asistio = comisionesState[idx].asistio === 'X' ? '' : 'X';
-      renderComisionesRows();
+    window.updateComisionAsistencia = function (idx, val) {
+      const parsed = parseInt(val, 10);
+      const cleanNum = !isNaN(parsed) && parsed > 0 ? parsed : 0;
+      comisionesState[idx].asistio = cleanNum;
+
+      const totalAsist = countComisionesAsistentes(comisionesState);
+      const badge = document.getElementById('comisiones-count-badge');
+      if (badge) {
+        badge.textContent = `${totalAsist} ${totalAsist === 1 ? 'persona' : 'personas'}`;
+      }
+      const list = document.getElementById('comisiones-list');
+      if (list && list.children[idx]) {
+        const row = list.children[idx];
+        const numBadge = row.querySelector('span');
+        const numInput = row.querySelector('input[type="number"]');
+        if (cleanNum > 0) {
+          row.classList.remove('bg-white', 'hover:bg-slate-50/70');
+          row.classList.add('bg-emerald-50/40');
+          if (numBadge) {
+            numBadge.classList.remove('bg-slate-100', 'text-slate-600');
+            numBadge.classList.add('bg-emerald-600', 'text-white');
+          }
+          if (numInput) {
+            numInput.classList.remove('border-slate-300', 'bg-white', 'text-slate-900');
+            numInput.classList.add('border-emerald-600', 'bg-emerald-50', 'text-emerald-900');
+          }
+        } else {
+          row.classList.remove('bg-emerald-50/40');
+          row.classList.add('bg-white', 'hover:bg-slate-50/70');
+          if (numBadge) {
+            numBadge.classList.remove('bg-emerald-600', 'text-white');
+            numBadge.classList.add('bg-slate-100', 'text-slate-600');
+          }
+          if (numInput) {
+            numInput.classList.remove('border-emerald-600', 'bg-emerald-50', 'text-emerald-900');
+            numInput.classList.add('border-slate-300', 'bg-white', 'text-slate-900');
+          }
+        }
+      }
     };
 
     window.updateComisionPropuesta = function (idx, val) {
@@ -769,9 +811,9 @@ const STORAGE_KEYS = {
     };
 
     window.clearAllComisiones = function () {
-      comisionesState = comisionesState.map(c => ({ ...c, asistio: '' }));
+      comisionesState = comisionesState.map(c => ({ ...c, asistio: 0 }));
       renderComisionesRows();
-      showToast('Asistencia de las 11 comisiones dejada en blanco.', 'info');
+      showToast('Asistencia de las 11 comisiones puesta en 0.', 'info');
     };
 
     function updateProgress() {
@@ -907,7 +949,7 @@ const STORAGE_KEYS = {
         asistioEnlace,
         comisiones: comisionesState.map(c => ({
           nombre: c.nombre,
-          asistio: c.asistio === 'X' ? 'X' : '',
+          asistio: parseComisionAsistenciaNum(c.asistio),
           propuesta: c.propuesta.trim()
         })),
         createdAt: new Date().toISOString()
@@ -1013,7 +1055,7 @@ const STORAGE_KEYS = {
               </span>
             </td>
             <td class="py-3.5 px-4 text-center">
-              <span class="px-2.5 py-1 rounded-lg bg-amber-100 text-amber-900 font-bold text-xs">${comX} / 11</span>
+              <span class="px-2.5 py-1 rounded-lg bg-amber-100 text-amber-900 font-bold text-xs">${comX} pers.</span>
             </td>
             <td class="py-3.5 px-4 text-right whitespace-nowrap">
               <button type="button" onclick="openDetailModal('${r.id}')"
@@ -1038,15 +1080,18 @@ const STORAGE_KEYS = {
       document.getElementById('modal-code').textContent = `${r.codigo} • ${r.municipio}`;
       document.getElementById('modal-title').textContent = r.circuitoNombre;
 
-      const comRows = (r.comisiones || []).map(c => `
-        <tr class="${c.asistio === 'X' ? 'bg-emerald-50/50' : ''}">
+      const comRows = (r.comisiones || []).map(c => {
+        const cant = parseComisionAsistenciaNum(c.asistio);
+        return `
+        <tr class="${cant > 0 ? 'bg-emerald-50/50' : ''}">
           <td class="py-2 px-3 font-semibold text-slate-800 text-xs">${escapeHtml(c.nombre)}</td>
-          <td class="py-2 px-3 text-center font-mono font-extrabold text-xs ${c.asistio === 'X' ? 'text-emerald-700' : 'text-slate-400'}">
-            ${c.asistio === 'X' ? 'X' : ''}
+          <td class="py-2 px-3 text-center font-mono font-extrabold text-xs ${cant > 0 ? 'text-emerald-700' : 'text-slate-400'}">
+            ${cant}
           </td>
           <td class="py-2 px-3 text-slate-700 text-xs">${escapeHtml(c.propuesta || 'Sin propuesta')}</td>
         </tr>
-      `).join('');
+      `;
+      }).join('');
 
       document.getElementById('modal-body').innerHTML = `
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-slate-50 p-4 rounded-2xl border border-slate-200">
@@ -1133,7 +1178,7 @@ const STORAGE_KEYS = {
               'CANTIDAD DE ACTIVIDADES REALIZADAS EN LA SEMANA': idx === 0 ? r.cantidadActividades : '',
               'ASISTIO EL ENLACE MUNICIPAL': idx === 0 ? r.asistioEnlace : '',
               'COMISIONES ASISTENTES': c.nombre,
-              'ASISTENCIA (X)': c.asistio === 'X' ? 'X' : '',
+              'ASISTENCIA (CANTIDAD)': parseComisionAsistenciaNum(c.asistio),
               'PROPUESTAS POR COMISION': c.propuesta || '',
               'REPORTANTE': idx === 0 ? (r.reporterName || '') : '',
               'CEDULA': idx === 0 ? (r.reporterCedula || '') : '',
@@ -1161,7 +1206,7 @@ const STORAGE_KEYS = {
             'CARGO EN EL SISTEMA ESEQUIBO': r.cargoEsequibo,
             'CANTIDAD DE ACTIVIDADES REALIZADAS EN LA SEMANA': r.cantidadActividades,
             'ASISTIO EL ENLACE MUNICIPAL': r.asistioEnlace,
-            'TOTAL COMISIONES (X)': countComisionesAsistentes(r.comisiones),
+            'TOTAL ASISTENTES COMISIONES': countComisionesAsistentes(r.comisiones),
             'COMISIONES ASISTENTES': comsAsistentes,
             'PROPUESTAS POR COMISION': propuestasTexto,
             'FECHA REGISTRO': r.createdAt || ''
