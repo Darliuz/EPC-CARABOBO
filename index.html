@@ -42,26 +42,18 @@
           </div>
           <div>
             <span class="text-[11px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-amber-400/20 text-amber-200 border border-amber-300/30">
-              Consolidación Estadística y Excel • Estado Carabobo
+              Panel Privado de Administración • Carabobo
             </span>
             <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight mt-0.5">
-              Panel Administrador — Reportes EPC
+              Administrador - Reporte Semanal EPC
             </h1>
           </div>
         </div>
 
-        <div class="flex items-center gap-2.5 self-start sm:self-auto">
-          <a href="../index.html"
-            class="px-4 py-2 rounded-xl bg-white/15 hover:bg-white/25 text-white text-xs sm:text-sm font-bold border border-white/20 transition flex items-center gap-2">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M11 17l-5-5m0 0l5-5m-5 5h12" />
-            </svg>
-            <span>Ir al Formulario</span>
-          </a>
-          <button type="button" id="logout-btn" onclick="logoutAdmin()"
-            class="hidden px-4 py-2 rounded-xl bg-rose-950/70 hover:bg-rose-950 text-rose-100 text-xs sm:text-sm font-bold border border-rose-400/30 transition">
-            Cerrar Sesión
-          </button>
+        <div class="flex items-center gap-2.5">
+          <span id="admin-badge-status" class="text-xs font-bold uppercase tracking-wider px-3 py-1.5 rounded-xl bg-amber-400 text-slate-950">
+            Acceso
+          </span>
         </div>
       </div>
     </div>
@@ -70,186 +62,241 @@
   <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 max-w-md w-full px-4 pointer-events-none"></div>
 
   <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <section id="view-admin" class="fade-in space-y-6">
 
-    <!-- PANTALLA DE ACCESO ADMINISTRADOR -->
-    <section id="admin-login-box" class="max-w-md mx-auto my-8 bg-white rounded-3xl p-8 card-shadow border border-slate-200/80 space-y-6 fade-in">
-      <div class="text-center space-y-2">
-        <div class="w-14 h-14 rounded-2xl bg-brand-600 text-white mx-auto flex items-center justify-center shadow-md">
-          <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-          </svg>
-        </div>
-        <h2 class="text-2xl font-extrabold text-slate-900">Acceso Administrador</h2>
-        <p class="text-xs text-slate-500">Ingrese sus credenciales para consultar reportes, consolidar estadísticas y descargar en Excel.</p>
-      </div>
-
-      <form id="admin-login-form" class="space-y-4">
-        <div>
-          <label for="admin-user" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Usuario</label>
-          <input type="text" id="admin-user" required autocomplete="username" placeholder="admin"
-            class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" />
-        </div>
-        <div>
-          <label for="admin-pass" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Contraseña</label>
-          <input type="password" id="admin-pass" required autocomplete="current-password" placeholder="••••••••"
-            class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" />
-        </div>
-        <button type="submit"
-          class="w-full py-3 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm shadow-md transition">
-          Ingresar al Panel
-        </button>
-      </form>
-    </section>
-
-    <!-- DASHBOARD ADMINISTRADOR -->
-    <section id="admin-dashboard" class="hidden space-y-6 fade-in">
-
-      <!-- Barra de acciones y estado de sincronización -->
-      <div class="bg-white rounded-3xl p-5 sm:p-6 card-shadow border border-slate-200/80 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-        <div class="space-y-1">
-          <div class="flex items-center gap-2">
-            <span id="sync-dot" class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-            <span id="sync-status-label" class="text-xs font-bold uppercase tracking-wider text-slate-600">Sincronizado con la nube</span>
+      <div id="admin-gate-card" class="bg-white rounded-3xl p-6 sm:p-8 card-shadow border border-slate-200 max-w-3xl mx-auto space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
+          <div class="flex items-center gap-4">
+            <div class="w-14 h-14 rounded-2xl bg-slate-900 text-amber-400 flex items-center justify-center shadow-md shrink-0">
+              <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+            </div>
+            <div>
+              <span id="gate-status-pill" class="inline-block text-[11px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900">
+                Control del Creador Principal
+              </span>
+              <h2 id="gate-main-title" class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-0.5">
+                Acceso del Creador Principal
+              </h2>
+              <p id="gate-main-subtitle" class="text-xs sm:text-sm text-slate-600">
+                Inicie sesión desde el único dispositivo autorizado con su correo y clave maestra (<strong class="font-mono text-slate-900">EPC2026</strong>).
+              </p>
+            </div>
           </div>
-          <h2 class="text-xl font-extrabold text-slate-900">Consolidado Semanal de Circuitos Comunales</h2>
         </div>
 
-        <div class="flex flex-wrap items-center gap-2.5">
-          <button type="button" onclick="syncFromCloud(true)"
-            class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs sm:text-sm font-bold border border-slate-300 transition flex items-center gap-2">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-            </svg>
-            <span>Actualizar</span>
-          </button>
-
-          <button type="button" onclick="exportExcelConsolidado()"
-            class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-bold shadow-md transition flex items-center gap-2">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            <span>Descargar Excel (.xlsx)</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Tarjetas KPI -->
-      <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
-        <div class="bg-white p-5 rounded-2xl border border-slate-200 card-shadow">
-          <div class="text-xs font-semibold text-slate-500">Reportes Recibidos</div>
-          <div id="kpi-total-reportes" class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">0</div>
-          <div id="kpi-cobertura" class="text-[11px] font-semibold text-brand-700 mt-1">0 / 173 circuitos</div>
+        <div id="gate-device-lock-banner" class="hidden bg-rose-50 border-2 border-rose-300 rounded-2xl p-4 flex items-start gap-3">
+          <div class="w-9 h-9 rounded-xl bg-rose-600 text-white flex items-center justify-center shrink-0 font-extrabold text-sm">!</div>
+          <div class="text-xs text-rose-950 space-y-1">
+            <div class="font-extrabold text-sm text-rose-900">Acceso Exclusivo del Creador del Formulario</div>
+            <p>
+              Solo el creador principal autorizado puede iniciar sesión, ver los registros y descargar el archivo Excel (<span id="gate-locked-device-label" class="font-mono font-bold"></span>).
+            </p>
+          </div>
         </div>
 
-        <div class="bg-white p-5 rounded-2xl border border-slate-200 card-shadow">
-          <div class="text-xs font-semibold text-slate-500">Reuniones Realizadas</div>
-          <div id="kpi-reuniones-si" class="text-2xl sm:text-3xl font-extrabold text-emerald-700 mt-1">0</div>
-          <div id="kpi-reuniones-pct" class="text-[11px] text-slate-500 mt-1">0% de efectividad</div>
+        <div id="gate-claim-block" class="bg-slate-900 text-white rounded-2xl p-5 space-y-2">
+          <div class="flex items-center gap-2.5">
+            <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-amber-400 text-slate-950">
+              Acceso Privado
+            </span>
+            <h3 class="text-sm sm:text-base font-extrabold">Área Exclusiva del Creador del Formulario</h3>
+          </div>
+          <p class="text-xs text-slate-300">
+            Solo el creador principal puede autenticarse aquí para revisar registros y descargar el Excel consolidado.
+          </p>
         </div>
 
-        <div class="bg-white p-5 rounded-2xl border border-slate-200 card-shadow">
-          <div class="text-xs font-semibold text-slate-500">Participación Total</div>
-          <div id="kpi-participacion" class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">0</div>
-          <div class="text-[11px] text-slate-500 mt-1">Asistentes acumulados</div>
-        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          <form id="creator-login-form" onsubmit="loginAsCreator(event)" class="lg:col-span-7 bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-4">
+            <h3 class="text-sm font-extrabold uppercase tracking-wider text-slate-700">
+              Identificación del Creador Principal
+            </h3>
 
-        <div class="bg-white p-5 rounded-2xl border border-slate-200 card-shadow">
-          <div class="text-xs font-semibold text-slate-500">Cargadas en Esequibo</div>
-          <div id="kpi-esequibo" class="text-2xl sm:text-3xl font-extrabold text-indigo-700 mt-1">0</div>
-          <div class="text-[11px] text-slate-500 mt-1">Reportadas como Si</div>
-        </div>
+            <div>
+              <label for="login-creator-email" class="block text-xs font-bold text-slate-700 mb-1">
+                Correo Electrónico del Creador <span class="text-brand-600">*</span>
+              </label>
+              <input type="email" id="login-creator-email" required placeholder="Ingrese el correo del creador"
+                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500" />
+              <p class="text-[11px] text-slate-500 mt-1">Solo el correo único del creador principal tiene permiso de acceso y descarga.</p>
+            </div>
 
-        <div class="bg-white p-5 rounded-2xl border border-slate-200 card-shadow col-span-2 lg:col-span-1">
-          <div class="text-xs font-semibold text-slate-500">Actividades Semanales</div>
-          <div id="kpi-actividades" class="text-2xl sm:text-3xl font-extrabold text-amber-700 mt-1">0</div>
-          <div id="kpi-enlaces" class="text-[11px] text-slate-500 mt-1">Enlaces asistentes: 0</div>
-        </div>
-      </div>
+            <div>
+              <label for="login-creator-pin" class="block text-xs font-bold text-slate-700 mb-1">
+                Clave Secreta del Creador <span class="text-brand-600">*</span>
+              </label>
+              <input type="password" id="login-creator-pin" required placeholder="••••••••"
+                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-sm font-mono text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500" />
+            </div>
 
-      <!-- Filtros -->
-      <div class="bg-white rounded-3xl p-5 sm:p-6 card-shadow border border-slate-200/80 grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div>
-          <label for="filter-semana" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Semana</label>
-          <select id="filter-semana"
-            class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-sm font-medium focus:outline-none focus:ring-2 focus:ring-brand-500">
-            <option value="">Todas las semanas</option>
-          </select>
-        </div>
+            <button type="submit"
+              class="w-full py-3 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm shadow transition flex items-center justify-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+              </svg>
+              <span>Entrar como Creador Principal</span>
+            </button>
+          </form>
 
-        <div>
-          <label for="filter-municipio" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Municipio</label>
-          <select id="filter-municipio"
-            class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-sm font-medium focus:outline-none focus:ring-2 focus:ring-brand-500">
-            <option value="">Todos los municipios (14)</option>
-          </select>
-        </div>
+          <div class="lg:col-span-5 space-y-4">
+            <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-3">
+              <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-700">
+                Cuenta Google del Creador
+              </h3>
+              <button type="button" onclick="signInWithGoogleCreator()"
+                class="w-full py-2.5 px-4 rounded-xl bg-white hover:bg-slate-100 border-2 border-slate-300 text-slate-800 font-bold text-sm transition flex items-center justify-center gap-2">
+                <svg class="w-4 h-4" viewBox="0 0 24 24">
+                  <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
+                  <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.11-6.72-4.96H1.29v3.14C3.26 21.3 7.31 24 12 24z"/>
+                  <path fill="#FBBC05" d="M5.28 14.24c-.24-.72-.38-1.49-.38-2.24s.14-1.52.38-2.24V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.99-3.14z"/>
+                  <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.99 3.14c.95-2.85 3.6-4.96 6.72-4.96z"/>
+                </svg>
+                <span>Entrar con Google (Solo Creador)</span>
+              </button>
+              <p id="firebase-status-note" class="text-[11px] text-slate-500">
+                Verificación estricta de identidad y dispositivo activo.
+              </p>
+            </div>
 
-        <div>
-          <label for="filter-reunion" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">¿Realizó Reunión?</label>
-          <select id="filter-reunion"
-            class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-sm font-medium focus:outline-none focus:ring-2 focus:ring-brand-500">
-            <option value="">Todos</option>
-            <option value="Si">Si</option>
-            <option value="No">No</option>
-          </select>
-        </div>
-
-        <div>
-          <label for="filter-search" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Buscar</label>
-          <input type="text" id="filter-search" placeholder="Código, circuito, reportante o cédula..."
-            class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" />
-        </div>
-      </div>
-
-      <!-- Tabla de reportes -->
-      <div class="bg-white rounded-3xl card-shadow border border-slate-200/80 overflow-hidden">
-        <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
-          <h3 class="text-base font-bold text-slate-900">Detalle de Reportes Registrados</h3>
-          <span id="table-count-label" class="text-xs font-bold px-3 py-1 rounded-full bg-slate-100 text-slate-700">0 registros</span>
-        </div>
-
-        <div class="overflow-x-auto">
-          <table class="min-w-full divide-y divide-slate-200 text-xs sm:text-sm">
-            <thead class="bg-slate-900 text-white text-[11px] uppercase tracking-wider">
-              <tr>
-                <th class="px-4 py-3.5 text-left font-bold">Semana</th>
-                <th class="px-4 py-3.5 text-left font-bold">Municipio</th>
-                <th class="px-4 py-3.5 text-left font-bold">Circuito Comunal</th>
-                <th class="px-4 py-3.5 text-left font-bold">Reportante</th>
-                <th class="px-4 py-3.5 text-center font-bold">Reunión</th>
-                <th class="px-4 py-3.5 text-center font-bold">Asist.</th>
-                <th class="px-4 py-3.5 text-center font-bold">Esequibo</th>
-                <th class="px-4 py-3.5 text-center font-bold">Activ.</th>
-                <th class="px-4 py-3.5 text-center font-bold">Enlace</th>
-                <th class="px-4 py-3.5 text-center font-bold">Comisiones</th>
-                <th class="px-4 py-3.5 text-center font-bold">Acciones</th>
-              </tr>
-            </thead>
-            <tbody id="reports-table-body" class="divide-y divide-slate-200 bg-white"></tbody>
-          </table>
+            <div class="bg-slate-900 text-white p-5 rounded-2xl border border-slate-800 space-y-2">
+              <span class="inline-block text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-amber-400/20 text-amber-200">
+                Identidad Fija
+              </span>
+              <h3 class="text-xs font-extrabold uppercase tracking-wider text-white">
+                Titularidad Exclusiva
+              </h3>
+              <p class="text-xs text-slate-300">
+                Solo la cuenta y dispositivo autorizados tienen acceso a los registros y a la descarga del Excel.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 
+      <div id="admin-dashboard" class="hidden space-y-6">
+        <div class="bg-white rounded-3xl p-6 sm:p-8 card-shadow border border-slate-200 flex flex-col xl:flex-row xl:items-center xl:justify-between gap-5">
+          <div class="space-y-1">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">
+                ✓ Sesión de Creador Principal Activa
+              </span>
+              <span id="active-creator-summary" class="text-xs text-slate-600 font-mono"></span>
+            </div>
+            <h2 class="text-2xl font-extrabold text-slate-900">Panel de Consolidado y Exportación Excel</h2>
+            <p class="text-sm text-slate-600">
+              Revise los registros semanales de los 14 municipios y 173 circuitos de Carabobo y descargue el archivo Excel (.xlsx).
+            </p>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-3">
+            <button type="button" onclick="syncCloudReportsNow(true)"
+              class="px-4 py-3 rounded-2xl bg-sky-50 hover:bg-sky-100 text-sky-900 font-bold text-sm border border-sky-300 transition flex items-center gap-2">
+              <svg class="w-4 h-4 text-sky-700" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              <span>Actualizar Registros</span>
+            </button>
+
+            <button type="button" onclick="logoutCreatorSession()"
+              class="px-4 py-3 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-sm border border-slate-300 transition flex items-center gap-2">
+              <svg class="w-4 h-4 text-slate-700" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+              <span>Cerrar Sesión de Creador</span>
+            </button>
+
+            <button type="button" onclick="exportToExcel()"
+              class="px-6 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-sm shadow-lg hover:shadow-xl transition flex items-center gap-2">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <span>Descargar Excel (.xlsx)</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="bg-white rounded-2xl p-5 card-shadow border border-slate-200">
+            <div class="text-xs font-semibold text-slate-500 uppercase">Total Reportes</div>
+            <div id="stat-total-reports" class="text-2xl font-extrabold text-slate-900 mt-1">0</div>
+          </div>
+          <div class="bg-white rounded-2xl p-5 card-shadow border border-slate-200">
+            <div class="text-xs font-semibold text-slate-500 uppercase">Participación Total</div>
+            <div id="stat-total-participants" class="text-2xl font-extrabold text-brand-700 mt-1">0</div>
+          </div>
+          <div class="bg-white rounded-2xl p-5 card-shadow border border-slate-200">
+            <div class="text-xs font-semibold text-slate-500 uppercase">Reuniones Realizadas</div>
+            <div id="stat-reuniones-si" class="text-2xl font-extrabold text-emerald-700 mt-1">0</div>
+          </div>
+          <div class="bg-white rounded-2xl p-5 card-shadow border border-slate-200">
+            <div class="text-xs font-semibold text-slate-500 uppercase">Actividades Semanales</div>
+            <div id="stat-total-activities" class="text-2xl font-extrabold text-amber-600 mt-1">0</div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-3xl p-6 card-shadow border border-slate-200 space-y-4">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <h3 class="text-lg font-bold text-slate-900">Registros de Personas y Circuitos</h3>
+            <div class="flex flex-col sm:flex-row gap-3">
+              <select id="admin-filter-mun" onchange="renderAdminTable()"
+                class="px-3.5 py-2 rounded-xl border border-slate-300 text-sm bg-white text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                <option value="">Todos los Municipios</option>
+              </select>
+              <input type="text" id="admin-search-input" oninput="renderAdminTable()" placeholder="Buscar código, circuito, cédula o persona..."
+                class="px-3.5 py-2 rounded-xl border border-slate-300 text-sm bg-white text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500" />
+            </div>
+          </div>
+
+          <div class="overflow-x-auto rounded-2xl border border-slate-200">
+            <table class="w-full text-left border-collapse text-sm">
+              <thead>
+                <tr class="bg-slate-900 text-white text-xs uppercase tracking-wider">
+                  <th class="py-3.5 px-4">Municipio</th>
+                  <th class="py-3.5 px-4">Código / Circuito Comunal</th>
+                  <th class="py-3.5 px-4">Reportante / Cédula / Teléfono</th>
+                  <th class="py-3.5 px-4 text-center">Reunión EPC</th>
+                  <th class="py-3.5 px-4 text-center">Participación</th>
+                  <th class="py-3.5 px-4 text-center">Sist. Esequibo</th>
+                  <th class="py-3.5 px-4 text-center">Actividades</th>
+                  <th class="py-3.5 px-4 text-center">Enlace Mun.</th>
+                  <th class="py-3.5 px-4 text-center">Asist. Comisiones</th>
+                  <th class="py-3.5 px-4 text-right">Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="admin-table-body" class="divide-y divide-slate-200">
+                <tr>
+                  <td colspan="10" class="py-8 text-center text-slate-500">Sin registros todavía.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </section>
   </main>
 
-  <!-- Modal Detalle -->
-  <div id="detail-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 shadow-2xl space-y-5">
-      <div class="flex items-start justify-between gap-4 border-b border-slate-100 pb-4">
+  <div id="detail-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-3xl w-full max-h-[88vh] flex flex-col shadow-2xl overflow-hidden">
+      <div class="px-6 py-4 bg-slate-900 text-white flex items-center justify-between">
         <div>
-          <span id="modal-code" class="text-xs font-mono font-bold px-2.5 py-1 rounded-lg bg-amber-100 text-amber-900">COM_000000000</span>
-          <h3 id="modal-title" class="text-lg sm:text-xl font-extrabold text-slate-900 mt-1.5">Detalle del Circuito</h3>
-          <p id="modal-subtitle" class="text-xs text-slate-500 mt-0.5">--</p>
+          <span id="modal-code" class="text-xs font-mono text-amber-300 font-bold">COM_000000000</span>
+          <h3 id="modal-title" class="text-lg font-bold">Detalle del Circuito Comunal</h3>
         </div>
-        <button type="button" onclick="closeDetailModal()" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 font-bold text-slate-700">✕</button>
+        <button type="button" onclick="closeDetailModal()" class="p-2 rounded-xl hover:bg-white/10 transition">✕</button>
       </div>
-      <div id="modal-body" class="space-y-4 text-sm"></div>
+      <div id="modal-body" class="p-6 overflow-y-auto space-y-4 text-sm"></div>
+      <div class="px-6 py-3.5 bg-slate-50 border-t border-slate-200 flex justify-end">
+        <button type="button" onclick="closeDetailModal()" class="px-5 py-2 rounded-xl bg-slate-800 text-white font-semibold text-sm hover:bg-slate-700 transition">
+          Cerrar
+        </button>
+      </div>
     </div>
   </div>
 
   <script src="../js/cloud-config.js"></script>
   <script src="../js/data.js"></script>
-  <script type="module" src="js/admin.js"></script>
+  <script type="module" src="../js/app.js"></script>
 </body>
 </html>
